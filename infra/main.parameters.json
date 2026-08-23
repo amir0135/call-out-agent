@@ -1,0 +1,90 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "${AZURE_ENV_NAME}"
+    },
+    "location": {
+      "value": "${AZURE_LOCATION}"
+    },
+    "acsPhoneNumber": {
+      "value": "${ACS_PHONE_NUMBER}"
+    },
+    "acsEndpoint": {
+      "value": "${ACS_ENDPOINT}"
+    },
+    "acsConnectionString": {
+      "value": "${ACS_CONNECTION_STRING}"
+    },
+    "acsSpeechLanguage": {
+      "value": "${ACS_SPEECH_LANGUAGE=en-US}"
+    },
+    "speechLocation": {
+      "value": "${SPEECH_LOCATION=}"
+    },
+    "searchLocation": {
+      "value": "${SEARCH_LOCATION=}"
+    },
+    "containerAppsLocation": {
+      "value": "${CONTAINER_APPS_LOCATION=}"
+    },
+    "cosmosLocation": {
+      "value": "${COSMOS_LOCATION=}"
+    },
+    "openAiDeploymentSku": {
+      "value": "${OPENAI_DEPLOYMENT_SKU=Standard}"
+    },
+    "localMode": {
+      "value": "${LOCAL_MODE=false}"
+    },
+    "speechVoice": {
+      "value": "${SPEECH_VOICE=en-US-JennyNeural}"
+    },
+    "streamingMode": {
+      "value": "${STREAMING_MODE=false}"
+    },
+    "streamingSegmentationMs": {
+      "value": "${STREAMING_SEGMENTATION_MS=150}"
+    },
+    "streamingGreetingDelayMs": {
+      "value": "${STREAMING_GREETING_DELAY_MS=1000}"
+    },
+    "deployRedis": {
+      "value": "${DEPLOY_REDIS=true}"
+    },
+    "orchestratorMaxReplicas": {
+      "value": "${ORCHESTRATOR_MAX_REPLICAS=50}"
+    },
+    "outcomeWebhookUrl": {
+      "value": "${OUTCOME_WEBHOOK_URL=}"
+    },
+    "outcomeWebhookSecret": {
+      "value": "${OUTCOME_WEBHOOK_SECRET=}"
+    },
+    "orchestratorApiKey": {
+      "value": "${ORCHESTRATOR_API_KEY=}"
+    },
+    "streamingEngine": {
+      "value": "${STREAMING_ENGINE=chained}"
+    },
+    "realtimeVoice": {
+      "value": "${REALTIME_VOICE=alloy}"
+    },
+    "voiceLiveEndpoint": {
+      "value": "${VOICELIVE_ENDPOINT=}"
+    },
+    "voiceLiveModel": {
+      "value": "${VOICELIVE_MODEL=gpt-realtime}"
+    },
+    "voiceLiveVoice": {
+      "value": "${VOICELIVE_VOICE=en-GB-OllieMultilingualNeural}"
+    },
+    "agentImage": {
+      "value": "${SERVICE_AGENT_IMAGE_NAME=}"
+    },
+    "orchestratorImage": {
+      "value": "${SERVICE_ORCHESTRATOR_IMAGE_NAME=}"
+    }
+  }
+}

@@ -1,0 +1,52 @@
+services:
+  # ---------------------------------------------------------------
+  # SOP Reasoning Agent (local mock or Azure OpenAI)
+  # ---------------------------------------------------------------
+  agent:
+    build:
+      context: .
+      dockerfile: src/agent/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - LOCAL_MODE=${LOCAL_MODE:-true}
+      - RAG_ENABLED=${RAG_ENABLED:-true}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT:-}
+      - AZURE_OPENAI_DEPLOYMENT=${AZURE_OPENAI_DEPLOYMENT:-gpt-4o-mini}
+      - AZURE_AI_SEARCH_ENDPOINT=${AZURE_AI_SEARCH_ENDPOINT:-}
+      - INDEX_EQUIPMENT=${INDEX_EQUIPMENT:-idx-equipment-manuals}
+      - INDEX_MAINTENANCE=${INDEX_MAINTENANCE:-idx-maintenance-guides}
+      - INDEX_STORE_PROFILES=${INDEX_STORE_PROFILES:-idx-store-profiles}
+      - INDEX_ALARM_HISTORY=${INDEX_ALARM_HISTORY:-idx-alarm-history}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ---------------------------------------------------------------
+  # Call Orchestrator (ACS Call Automation)
+  # ---------------------------------------------------------------
+  orchestrator:
+    build:
+      context: .
+      dockerfile: src/orchestrator/Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      agent:
+        condition: service_healthy
+    environment:
+      - ACS_ENDPOINT=${ACS_ENDPOINT}
+      - ACS_PHONE_NUMBER=${ACS_PHONE_NUMBER}
+      - ACS_CONNECTION_STRING=${ACS_CONNECTION_STRING:-}
+      - CALLBACK_BASE_URL=${CALLBACK_BASE_URL}
+      - COSMOS_ENDPOINT=${COSMOS_ENDPOINT:-}
+      - FOUNDRY_AGENT_ENDPOINT=http://agent:8080
+      - SPEECH_REGION=${SPEECH_REGION:-eastus}
+      - SPEECH_VOICE=${SPEECH_VOICE:-en-US-JennyNeural}
+      - COGNITIVE_SERVICES_ENDPOINT=${COGNITIVE_SERVICES_ENDPOINT:-}
+      - LOCAL_MODE=${LOCAL_MODE:-true}
+    # Mount Azure credentials for local development
+    volumes:
+      - ${HOME}/.azure:/root/.azure:ro

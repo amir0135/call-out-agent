@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+*.egg
+.azure/
+!.azure/.gitkeep
+.foundry/datasets/
+.foundry/results/
+*.log

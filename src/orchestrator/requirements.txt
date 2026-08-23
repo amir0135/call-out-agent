@@ -1,0 +1,18 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+azure-communication-callautomation==1.4.0
+azure-cosmos==4.9.0
+azure-identity==1.19.0
+azure-servicebus==7.13.0
+# Required by azure.identity.aio / azure.servicebus.aio (queue consumer).
+aiohttp==3.11.11
+azure-storage-blob==12.24.0
+httpx==0.28.1
+redis==5.2.1
+opentelemetry-api==1.29.0
+opentelemetry-sdk==1.29.0
+opentelemetry-instrumentation-fastapi==0.50b0
+azure-monitor-opentelemetry-exporter==1.0.0b33
+azure-cognitiveservices-speech>=1.40.0
+websockets>=12.0

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.19",
+  "version": "1.0.0",
+  "id": "7a69b406-f44c-4222-9337-99ccf49122a2",
+  "developer": {
+    "name": "Call-Out Agent",
+    "websiteUrl": "https://your-orchestrator.azurecontainerapps.io",
+    "privacyUrl": "https://your-orchestrator.azurecontainerapps.io/privacy",
+    "termsOfUseUrl": "https://your-orchestrator.azurecontainerapps.io/terms"
+  },
+  "name": {
+    "short": "Call-Out Agent",
+    "full": "SOP-Constrained Call-Out Agent"
+  },
+  "description": {
+    "short": "Trigger SOP-constrained outbound safety call-outs.",
+    "full": "An SOP-constrained assistant that places outbound safety call-outs to on-call contacts for equipment alarms and reports on the call service's latency and health."
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "accentColor": "#D83B01",
+  "copilotAgents": {
+    "declarativeAgents": [
+      {
+        "id": "callOutAgent",
+        "file": "declarativeAgent.json"
+      }
+    ]
+  }
+}

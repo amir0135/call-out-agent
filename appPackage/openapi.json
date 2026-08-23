@@ -1,0 +1,229 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Call-Out Agent Orchestrator",
+    "description": "Trigger and observe SOP-constrained outbound safety call-outs.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://your-orchestrator.azurecontainerapps.io",
+      "description": "Replace with your Container App ingress FQDN (az containerapp show ... --query properties.configuration.ingress.fqdn)."
+    }
+  ],
+  "paths": {
+    "/api/alarm-intent": {
+      "post": {
+        "operationId": "triggerCallOut",
+        "summary": "Place an outbound SOP call-out for an alarm",
+        "description": "Starts an outbound phone call to the on-call contact and drives the SOP conversation. If phone_number is omitted it is resolved from the tenant registry.",
+        "security": [
+          {
+            "apiKeyHeader": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CallIntent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Call initiated or skipped",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallResult"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Alarm queued for processing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/latency": {
+      "get": {
+        "operationId": "getLatencyMetrics",
+        "summary": "Voice-to-voice latency statistics",
+        "description": "Returns current voice-to-voice latency stats in milliseconds versus the target.",
+        "responses": {
+          "200": {
+            "description": "Latency statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "summary": "Service health",
+        "description": "Returns orchestrator health and the active SOP id.",
+        "responses": {
+          "200": {
+            "description": "Health status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "sop": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    },
+    "schemas": {
+      "AlarmContext": {
+        "type": "object",
+        "required": [
+          "alarm_id",
+          "alarm_type",
+          "store_name",
+          "store_id",
+          "equipment_name",
+          "current_temp",
+          "threshold_temp",
+          "alarm_time",
+          "customer_id"
+        ],
+        "properties": {
+          "alarm_id": {
+            "type": "string",
+            "description": "Unique alarm identifier."
+          },
+          "alarm_type": {
+            "type": "string",
+            "description": "Alarm type, e.g. high_temperature."
+          },
+          "severity": {
+            "type": "string",
+            "default": "high",
+            "description": "Alarm severity."
+          },
+          "store_name": {
+            "type": "string",
+            "description": "Human-readable store name."
+          },
+          "store_id": {
+            "type": "string",
+            "description": "Store identifier."
+          },
+          "equipment_name": {
+            "type": "string",
+            "description": "Name of the equipment in alarm."
+          },
+          "current_temp": {
+            "type": "number",
+            "description": "Current temperature reading."
+          },
+          "threshold_temp": {
+            "type": "number",
+            "description": "Threshold temperature that was breached."
+          },
+          "alarm_time": {
+            "type": "string",
+            "description": "When the alarm fired (ISO 8601 or human-readable time)."
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "Customer that owns the store."
+          }
+        }
+      },
+      "CallIntent": {
+        "type": "object",
+        "required": [
+          "alarm"
+        ],
+        "properties": {
+          "alarm": {
+            "$ref": "#/components/schemas/AlarmContext"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "E.164 number to call. Omit to resolve the on-call contact automatically."
+          },
+          "sop_id": {
+            "type": "string",
+            "default": "SOP-HTA-001",
+            "description": "Standard operating procedure to follow."
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "Override customer id (defaults to alarm.customer_id)."
+          },
+          "priority": {
+            "type": "integer",
+            "default": 1,
+            "description": "Call priority (1 = highest)."
+          }
+        }
+      },
+      "CallResult": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "call_initiated | queued | skipped."
+          },
+          "call_id": {
+            "type": "string",
+            "description": "Identifier of the placed call session."
+          },
+          "attempt": {
+            "type": "integer",
+            "description": "Attempt number for this alarm."
+          },
+          "intent_id": {
+            "type": "string",
+            "description": "Identifier assigned to the queued intent."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why the call was skipped, when status is skipped."
+          }
+        }
+      }
+    }
+  }
+}

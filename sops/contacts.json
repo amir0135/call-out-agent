@@ -1,0 +1,43 @@
+{
+  "_comment": "Contact roster. Keyed by sop_id, then optionally by store_id. Orchestrator calls contacts in priority order (1 = first) until someone answers.",
+  "default": {
+    "on_call_technicians": [
+      {
+        "name": "Test Mobile",
+        "phone_number": "+15551230123",
+        "role": "technician",
+        "priority": 1,
+        "call_window_start": "06:00",
+        "call_window_end": "22:00"
+      }
+    ],
+    "escalation": [
+      {
+        "name": "Duty Supervisor",
+        "phone_number": "+15551230123",
+        "role": "supervisor",
+        "priority": 1
+      }
+    ]
+  },
+  "SOP-HTA-001": {
+    "_comment": "High-temperature alarm contacts. Can be further keyed by store_id.",
+    "on_call_technicians": [
+      {
+        "name": "Refrigeration Tech - Copenhagen",
+        "phone_number": "+15551230123",
+        "role": "refrigeration_technician",
+        "priority": 1,
+        "stores": ["ST-CPH-01", "ST-CPH-02"]
+      }
+    ],
+    "escalation": [
+      {
+        "name": "Regional Operations Manager",
+        "phone_number": "+15551230123",
+        "role": "ops_manager",
+        "priority": 1
+      }
+    ]
+  }
+}

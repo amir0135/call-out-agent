@@ -1,0 +1,71 @@
+{
+  "domains": {
+    "equipment": {
+      "index_name": "idx-equipment-manuals",
+      "description": "Contoso equipment technical manuals, specs, troubleshooting guides",
+      "sources": [
+        "Contoso RC-550 Case Controller Manual",
+        "Contoso RCU-100 Condensing Unit Guide",
+        "Contoso RT-202 Controller Manual",
+        "Contoso PLC-M Controller Series",
+        "General Refrigeration Equipment Specs"
+      ]
+    },
+    "maintenance": {
+      "index_name": "idx-maintenance-guides",
+      "description": "Recommended actions, repair procedures, preventive maintenance schedules",
+      "sources": [
+        "High Temperature Alarm Actions",
+        "Low Temperature Alarm Actions",
+        "Compressor Failure Response",
+        "Preventive Maintenance Schedule",
+        "Emergency Response Procedures"
+      ]
+    },
+    "store_profiles": {
+      "index_name": "idx-store-profiles",
+      "description": "Store configurations, contacts, equipment inventory, service contracts",
+      "sources": [
+        "Store configuration database",
+        "Service contract details",
+        "Equipment inventory per store"
+      ]
+    },
+    "alarm_history": {
+      "index_name": "idx-alarm-history",
+      "description": "Historical alarm data, patterns, root cause analysis, resolution statistics",
+      "sources": [
+        "Alarm pattern analysis reports",
+        "Root cause statistics",
+        "Resolution outcome tracking",
+        "Repeat alarm correlation data"
+      ]
+    }
+  },
+  "index_schema": {
+    "fields": [
+      {"name": "id", "type": "Edm.String", "key": true, "filterable": true},
+      {"name": "title", "type": "Edm.String", "searchable": true},
+      {"name": "content", "type": "Edm.String", "searchable": true},
+      {"name": "domain", "type": "Edm.String", "filterable": true, "facetable": true},
+      {"name": "source", "type": "Edm.String", "filterable": true},
+      {"name": "metadata", "type": "Edm.ComplexType", "fields": [
+        {"name": "equipment_model", "type": "Edm.String", "filterable": true},
+        {"name": "alarm_type", "type": "Edm.String", "filterable": true},
+        {"name": "store_id", "type": "Edm.String", "filterable": true},
+        {"name": "last_updated", "type": "Edm.DateTimeOffset", "filterable": true, "sortable": true}
+      ]}
+    ],
+    "semantic": {
+      "configurations": [
+        {
+          "name": "{index_name}-semantic",
+          "prioritizedFields": {
+            "titleField": {"fieldName": "title"},
+            "contentFields": [{"fieldName": "content"}]
+          }
+        }
+      ]
+    }
+  }
+}

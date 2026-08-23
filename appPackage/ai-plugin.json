@@ -1,0 +1,89 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.1/schema.json",
+  "schema_version": "v2.1",
+  "name_for_human": "Call-Out Agent",
+  "namespace": "callout",
+  "description_for_human": "Trigger and observe SOP-constrained outbound safety call-outs.",
+  "description_for_model": "Places SOP-constrained outbound phone calls to on-call contacts about equipment alarms (e.g. high-temperature), and reports service latency and health. Use triggerCallOut to start a call for a specific alarm; only call it when the user clearly asks to place or trigger a call and has supplied the required alarm details (store, equipment, current and threshold temperature, alarm time, customer). Never invent alarm data.",
+  "functions": [
+    {
+      "name": "triggerCallOut",
+      "description": "Place an outbound SOP call-out for an alarm. Requires alarm details; phone number is optional and auto-resolved when omitted.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title": "$.status",
+            "subtitle": "$.call_id"
+          },
+          "static_template": {
+            "type": "AdaptiveCard",
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "version": "1.5",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": "Call-Out Result",
+                "weight": "Bolder",
+                "size": "Medium",
+                "wrap": true
+              },
+              {
+                "type": "FactSet",
+                "facts": [
+                  {
+                    "title": "Status",
+                    "value": "${if(status, status, 'unknown')}"
+                  },
+                  {
+                    "title": "Call ID",
+                    "value": "${if(call_id, call_id, '—')}"
+                  },
+                  {
+                    "title": "Attempt",
+                    "value": "${if(attempt, string(attempt), '—')}"
+                  },
+                  {
+                    "title": "Intent ID",
+                    "value": "${if(intent_id, intent_id, '—')}"
+                  }
+                ]
+              },
+              {
+                "type": "TextBlock",
+                "text": "${if(reason, concat('Reason: ', reason), '')}",
+                "isVisible": "${if(reason, true, false)}",
+                "wrap": true,
+                "spacing": "Small"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "getLatencyMetrics",
+      "description": "Return current voice-to-voice latency statistics in milliseconds."
+    },
+    {
+      "name": "getHealth",
+      "description": "Return orchestrator health and the active SOP id."
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "OpenApi",
+      "auth": {
+        "type": "None"
+      },
+      "spec": {
+        "url": "openapi.json"
+      },
+      "run_for_functions": [
+        "triggerCallOut",
+        "getLatencyMetrics",
+        "getHealth"
+      ]
+    }
+  ]
+}

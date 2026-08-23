@@ -1,0 +1,33 @@
+{
+  "_comment": "Multi-region routing config. Rename to regions.json (or set REGIONS_CONFIG_PATH) to activate. Each call is placed from the region whose dial_prefixes match the callee's E.164 number — co-locating PSTN media + Speech near the callee. Without this file the orchestrator runs single-region from env vars (unchanged behaviour).",
+  "default_region": "na",
+  "regions": [
+    {
+      "region_id": "na",
+      "acs_endpoint": "https://contoso-acs.unitedstates.communication.azure.com",
+      "source_phone": "+18005550100",
+      "dial_prefixes": ["+1"],
+      "speech_region": "eastus",
+      "speech_voice": "en-US-JennyNeural",
+      "cognitive_services_endpoint": "https://cog-eastus.cognitiveservices.azure.com"
+    },
+    {
+      "region_id": "eu",
+      "acs_endpoint": "https://contoso-acs-eu.europe.communication.azure.com",
+      "source_phone": "+4589870000",
+      "dial_prefixes": ["+45", "+44", "+49", "+33", "+34", "+31", "+46", "+47"],
+      "speech_region": "westeurope",
+      "speech_voice": "en-GB-LibbyNeural",
+      "cognitive_services_endpoint": "https://cog-westeurope.cognitiveservices.azure.com"
+    },
+    {
+      "region_id": "apac",
+      "acs_endpoint": "https://contoso-acs-apac.asiapacific.communication.azure.com",
+      "source_phone": "+6531590000",
+      "dial_prefixes": ["+65", "+61", "+81", "+852", "+91"],
+      "speech_region": "southeastasia",
+      "speech_voice": "en-US-JennyNeural",
+      "cognitive_services_endpoint": "https://cog-southeastasia.cognitiveservices.azure.com"
+    }
+  ]
+}

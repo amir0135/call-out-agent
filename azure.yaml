@@ -1,0 +1,27 @@
+# Azure Developer CLI (azd) configuration
+# Run: azd up to provision infrastructure and deploy both services
+
+name: call-out-agent
+metadata:
+  template: call-out-agent@0.1.0
+
+infra:
+  provider: bicep
+  path: ./infra
+
+services:
+  agent:
+    project: .
+    host: containerapp
+    language: python
+    docker:
+      path: src/agent/Dockerfile
+      context: .
+
+  orchestrator:
+    project: .
+    host: containerapp
+    language: python
+    docker:
+      path: src/orchestrator/Dockerfile
+      context: .

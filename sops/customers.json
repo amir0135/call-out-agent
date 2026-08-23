@@ -1,0 +1,16 @@
+[
+  {
+    "customer_id": "CUST-CCC",
+    "name": "Contoso Cold Chain A/S",
+    "default_language": "en-US",
+    "default_voice": "en-US-JennyNeural",
+    "timezone": "Europe/Copenhagen",
+    "sites": [
+      {
+        "store_id": "CCC-HQ-01",
+        "name": "Contoso Cold Chain Headquarters",
+        "address": "1 Example Way, 2100 Copenhagen, Denmark"
+      }
+    ]
+  }
+]

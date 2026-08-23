@@ -1,0 +1,184 @@
+{
+  "sop_id": "SOP-HTA-001",
+  "name": "High Temperature Alarm Verification",
+  "version": "1.0.0",
+  "alarm_type": "high_temperature",
+  "description": "Outbound call SOP for verifying high temperature alarms with store personnel.",
+  "constraints": {
+    "max_unclear_responses": 2,
+    "max_retries": 3,
+    "escalation_timeout_minutes": 30,
+    "call_window_start": "06:00",
+    "call_window_end": "22:00",
+    "max_call_duration_seconds": 300
+  },
+  "steps": [
+    {
+      "id": "greeting",
+      "type": "speak",
+      "text": "Hi, this is the Con-toso monitoring service. Sorry to bother you — I'm calling about a temperature alarm at {store_name}.",
+      "next": "ask_awareness"
+    },
+    {
+      "id": "ask_awareness",
+      "type": "ask",
+      "expected_response": "yes_no",
+      "text": "Were you already aware that {equipment_name} has a high-temperature alarm?",
+      "branches": [
+        {
+          "match": "yes",
+          "keywords": ["yes", "yeah", "aware", "know", "noticed", "seen", "saw"],
+          "next": "ask_action_taken"
+        },
+        {
+          "match": "no",
+          "keywords": ["no", "not aware", "didn't know", "news to me", "first time"],
+          "next": "inform_details"
+        },
+        {
+          "match": "unclear",
+          "keywords": [],
+          "next": "ask_awareness_retry"
+        }
+      ]
+    },
+    {
+      "id": "ask_awareness_retry",
+      "type": "ask",
+      "expected_response": "yes_no",
+      "text": "I understand. Let me clarify — we have a high temperature alarm on {equipment_name}. It is currently reading {current_temp} degrees. Are you aware of this situation?",
+      "branches": [
+        {
+          "match": "yes",
+          "keywords": ["yes", "yeah", "aware", "know", "noticed"],
+          "next": "ask_action_taken"
+        },
+        {
+          "match": "no",
+          "keywords": ["no", "not aware", "didn't know"],
+          "next": "inform_details"
+        },
+        {
+          "match": "unclear",
+          "keywords": [],
+          "next": "escalate_unclear"
+        }
+      ]
+    },
+    {
+      "id": "inform_details",
+      "type": "speak",
+      "text": "The alarm was triggered at {alarm_time}. The equipment {equipment_name} is showing a temperature of {current_temp} degrees, which is above the acceptable threshold of {threshold_temp} degrees. This may indicate a cooling issue that needs attention.",
+      "next": "ask_action_taken"
+    },
+    {
+      "id": "ask_action_taken",
+      "type": "ask",
+      "expected_response": "yes_no",
+      "text": "Has anyone had a chance to look into it yet?",
+      "branches": [
+        {
+          "match": "action_taken",
+          "keywords": ["yes", "checked", "looked at", "technician", "called", "fixed", "working on", "reset", "defrost"],
+          "next": "confirm_resolution"
+        },
+        {
+          "match": "no_action",
+          "keywords": ["no", "not yet", "haven't", "nobody", "no one"],
+          "next": "recommend_action"
+        },
+        {
+          "match": "unclear",
+          "keywords": [],
+          "next": "ask_action_retry"
+        }
+      ]
+    },
+    {
+      "id": "ask_action_retry",
+      "type": "ask",
+      "expected_response": "yes_no",
+      "text": "I want to make sure I understand correctly. Has anyone looked into the high temperature alarm on {equipment_name}, or is this still unaddressed?",
+      "branches": [
+        {
+          "match": "action_taken",
+          "keywords": ["yes", "checked", "looked at", "technician", "called", "fixed", "working on"],
+          "next": "confirm_resolution"
+        },
+        {
+          "match": "no_action",
+          "keywords": ["no", "not yet", "haven't", "nobody"],
+          "next": "recommend_action"
+        },
+        {
+          "match": "unclear",
+          "keywords": [],
+          "next": "escalate_unclear"
+        }
+      ]
+    },
+    {
+      "id": "recommend_action",
+      "type": "speak",
+      "text": "I recommend that the equipment is inspected as soon as possible. A prolonged high temperature condition could affect product quality and safety. Please have someone check the unit and contact your service provider if needed.",
+      "next": "confirm_resolution"
+    },
+    {
+      "id": "confirm_resolution",
+      "type": "ask",
+      "expected_response": "yes_no",
+      "text": "Got it. Shall I note this as being handled on your side?",
+      "branches": [
+        {
+          "match": "resolved",
+          "keywords": ["handled", "handle", "mark as handled", "market handle", "resolved", "taken care of", "yes", "will do", "on it", "confirm", "address"],
+          "next": "close_resolved"
+        },
+        {
+          "match": "follow_up",
+          "keywords": ["follow up", "call back", "later", "again", "not sure", "check", "need time"],
+          "next": "close_retry"
+        },
+        {
+          "match": "need_help",
+          "keywords": ["help", "technician", "dispatch", "send someone", "emergency", "urgent", "can't handle"],
+          "next": "escalate_human"
+        },
+        {
+          "match": "unclear",
+          "keywords": [],
+          "next": "escalate_unclear"
+        }
+      ]
+    },
+    {
+      "id": "close_resolved",
+      "type": "speak",
+      "text": "Perfect, thank you. I'll note it's being handled and we'll keep monitoring the equipment. If the alarm persists, we may follow up again. Have a good day.",
+      "next": null,
+      "outcome": "resolved"
+    },
+    {
+      "id": "close_retry",
+      "type": "speak",
+      "text": "Understood. We will follow up again shortly to check on the status of this alarm. Thank you for your time.",
+      "next": null,
+      "outcome": "retry_later"
+    },
+    {
+      "id": "escalate_human",
+      "type": "speak",
+      "text": "I understand this needs further assistance. I will connect you with a human operator from our service team who can help coordinate the next steps. Please hold for a moment.",
+      "next": null,
+      "outcome": "escalate_human"
+    },
+    {
+      "id": "escalate_unclear",
+      "type": "speak",
+      "text": "I apologize, but I'm having difficulty understanding the responses. I will transfer this call to a human operator who can assist you directly. Please hold for a moment.",
+      "next": null,
+      "outcome": "escalate_human"
+    }
+  ],
+  "terminal_outcomes": ["resolved", "retry_later", "escalate_human"]
+}
