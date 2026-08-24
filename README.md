@@ -2,6 +2,22 @@
 
 > **"An SOP-constrained AI voice agent that places outbound calls itself, follows existing procedures exactly, logs everything, and escalates only when needed."**
 
+## Get started in one command
+
+Clone the repo and run the setup script. It checks prerequisites, creates a Python
+virtual environment, installs all dependencies, generates a `.env` from
+`.env.example`, and runs the test suite to verify the checkout:
+
+```bash
+git clone https://github.com/amir0135/call-out-agent.git
+cd call-out-agent
+./setup.sh
+```
+
+From there, run the stack locally with `docker compose up --build`, or deploy the
+whole thing to Azure with `azd up`. See **Prerequisites** and **Quick Start** below
+for the Azure details (ACS phone number, Speech resource).
+
 ## Architecture
 
 ```
